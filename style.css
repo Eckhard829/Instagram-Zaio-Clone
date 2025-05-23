@@ -1,5 +1,6 @@
 /* Fonts */
 @import url('https://fonts.cdnfonts.com/css/billabong');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
 /* General styles */
 body {
@@ -14,28 +15,18 @@ body {
   min-height: 100vh;
 }
 
-/* Authentication styles */
+/* Authentication styles - CENTERED */
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   background: #000;
-}
-
-.auth-left {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 20px;
 }
 
-.auth-phone {
-  width: 400px;
-  height: 618px;
-  background: url('https://www.instagram.com/images/instagram/xig/homepage/screenshots_v3/instagram-web-lox-image.png') no-repeat center;
-  background-size: contain;
+.auth-left {
+  display: none; /* Hide phone image */
 }
 
 .auth-form {
@@ -43,6 +34,8 @@ body {
   padding: 30px;
   background: #000;
   text-align: center;
+  border: 1px solid #333;
+  border-radius: 8px;
 }
 
 .auth-logo {
@@ -241,7 +234,7 @@ body {
 
 .sidebar-more {
   padding-left: 12px;
-  margin-top: auto;
+  margin-top: 250px;
 }
 
 /* Main content */
@@ -249,37 +242,21 @@ body {
   margin-left: 311px;
   padding: 20px;
   flex-grow: 1;
-  max-width: 630px;
+  width: 630px;
 }
 
 .content-block {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the content horizontally */
 }
 
 .account-circles {
   display: flex;
   gap: 8px;
   align-items: center;
-  margin-bottom: 16px;
-  overflow-x: auto; /* Allow horizontal scrolling for many circles */
-  justify-content: center; /* Center the circles */
-  padding-bottom: 8px; /* Space for scrollbar */
-}
-
-.account-circles::-webkit-scrollbar {
-  height: 4px;
-}
-
-.account-circles::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 2px;
-}
-
-.account-circles::-webkit-scrollbar-track {
-  background: #222;
+  margin-bottom: 8px;
+  margin-left: 320px;
 }
 
 .account-circle {
@@ -287,7 +264,6 @@ body {
   height: 56px;
   padding: 4px;
   border-radius: 50%;
-  flex: 0 0 auto; /* Prevent circles from shrinking */
 }
 
 .account-circle img {
@@ -301,12 +277,11 @@ body {
 .post-section {
   display: flex;
   flex-direction: column;
-  width: 470px; /* Fixed width for posts */
-  margin: 0 auto; /* Center the posts */
+  align-items: center;
 }
 
 .post {
-  width: 100%; /* Full width of post-section (470px) */
+  width: 470px;
   padding: 10px;
   padding-bottom: 16px;
   border-bottom: 1px solid #333;
@@ -401,14 +376,54 @@ body {
   margin-bottom: 8px;
 }
 
+/* Comment styles */
+.post-comment-container {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid #262626;
+  margin-top: 8px;
+}
+
 .post-comment-input {
-  width: 100%;
-  padding: 8px;
-  background: #222;
+  flex: 1;
+  background: transparent;
   border: none;
-  color: #fff;
+  color: white;
+  padding: 8px 0;
   font-size: 14px;
-  border-radius: 4px;
+  outline: none;
+}
+
+.send-comment {
+  color: #0095f6;
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 20px;
+  opacity: 0.5;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.send-comment:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.post-comments {
+  margin-top: 8px;
+}
+
+.comment {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.comment-username {
+  font-weight: 600;
+  margin-right: 4px;
 }
 
 /* Create post styles */
@@ -544,6 +559,7 @@ body {
   width: 56px;
   height: 56px;
   margin-right: 10px;
+  margin-left: 10px;
 }
 
 .right-menu .profile-avatar img {
@@ -656,14 +672,9 @@ body {
     margin-left: 72px;
     width: calc(100% - 72px);
     padding: 10px;
-    max-width: none; /* Allow full width on mobile */
-  }
-  .content-block {
-    align-items: center; /* Maintain centering on mobile */
   }
   .account-circles {
-    width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
   }
   .account-circle {
     width: 40px;
@@ -672,11 +683,6 @@ body {
   .account-circle img {
     width: 40px;
     height: 40px;
-  }
-  .post-section {
-    width: 100%;
-    max-width: 470px;
-    margin: 0 auto; /* Keep centered on mobile */
   }
   .post {
     width: 100%;
