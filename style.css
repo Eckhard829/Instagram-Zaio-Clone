@@ -675,6 +675,11 @@ body {
   color: #fff;
 }
 
+/* Mobile header styles */
+.mobile-header {
+  display: none; /* Hidden on desktop */
+}
+
 /* Responsive styles for mobile */
 @media (max-width: 768px) {
   .app-container {
@@ -688,42 +693,48 @@ body {
     padding-bottom: 60px; /* Space for bottom nav */
   }
 
-  /* Mobile Header - Ensure logo is above stories */
-  .app::before {
-    content: '';
+  /* Mobile Header - Show and style the new header */
+  .mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 50px; /* Fixed height for header area */
-    background: transparent;
+    height: 50px;
+    background: #000;
     z-index: 1000;
-    display: block;
-    padding: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
   }
 
-  .app::before .mobile-header-left::before {
-    content: 'Instagram';
+  .mobile-header-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-logo {
     font-family: 'Billabong', cursive, sans-serif;
-    font-size: 32px; /* Slightly larger for visibility */
+    font-size: 32px;
     color: #fff;
-    position: absolute;
-    top: 5px; /* Adjusted for better spacing */
-    left: 10px;
     line-height: 1;
   }
 
-  .app::before .mobile-header-right::before {
-    content: '\e87d \e163'; /* Unicode for favorite and send icons */
-    font-family: 'Material Symbols Outlined';
+  .mobile-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .mobile-header-right .material-symbols-outlined {
     font-size: 24px;
     color: #fff;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 15px;
-    line-height: 1;
+  }
+
+  /* Override .app::before to avoid conflicts */
+  .app::before {
+    content: none; /* Remove pseudo-element on mobile */
   }
 
   /* Disable horizontal scrolling for body */
@@ -731,15 +742,15 @@ body {
     overflow-x: hidden;
   }
 
-  /* Stories section - Keep it from scrolling */
+  /* Stories section - Position below header */
   .stories-section {
     display: flex;
-    overflow-x: hidden; /* Prevent horizontal scrolling on stories-section itself */
+    overflow-x: hidden;
     padding: 10px 0;
     background: #000;
     border-bottom: 1px solid #333;
     white-space: nowrap;
-    margin-top: 60px; /* Increased space for logo and icons */
+    margin-top: 60px; /* Space for the new header */
   }
 
   /* Enable horizontal scrolling only for account circles */
@@ -749,9 +760,9 @@ body {
     display: flex;
     gap: 10px;
     align-items: center;
-    overflow-x: auto; /* Allow horizontal scrolling for account circles */
+    overflow-x: auto;
     white-space: nowrap;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+    -webkit-overflow-scrolling: touch;
   }
 
   .account-circle {
@@ -764,7 +775,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
   }
 
   .account-circle img {
@@ -806,7 +817,7 @@ body {
   .post-image {
     width: 100%;
     height: auto;
-    aspect-ratio: 1 / 1; /* Square images like Instagram */
+    aspect-ratio: 1 / 1;
     border-radius: 0;
   }
 
