@@ -748,6 +748,11 @@ body {
     gap: 15px;
   }
 
+  /* Disable vertical scrolling */
+  body {
+    overflow-y: hidden;
+  }
+
   /* Stories section */
   .stories-section {
     display: flex;
