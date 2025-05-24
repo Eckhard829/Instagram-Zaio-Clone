@@ -178,11 +178,6 @@ body {
   justify-content: space-between;
 }
 
-/* Mobile Header */
-.mobile-header {
-  display: none; /* Hidden on desktop */
-}
-
 /* Sidebar styles */
 .sidebar {
   position: fixed;
@@ -694,44 +689,63 @@ body {
   }
 
   /* Mobile Header */
-  .mobile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background: #000;
-    border-bottom: 1px solid #333;
+  .app::before {
+    content: '';
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    height: 50px;
+    background: #000;
     z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #333;
   }
 
-  .mobile-header-left {
+  .app::before .mobile-header-left {
     display: flex;
     align-items: center;
   }
 
-  .mobile-logo {
+  .app::before .mobile-logo {
     font-family: 'Billabong', cursive, sans-serif;
     font-size: 28px;
     color: #fff;
   }
 
-  .mobile-header-right {
+  .app::before .mobile-header-right {
     display: flex;
     gap: 15px;
   }
 
-  .header-icon {
+  .app::before .header-icon {
     font-size: 24px;
     color: #fff;
     cursor: pointer;
   }
 
-  .header-icon:hover {
+  .app::before .header-icon:hover {
     color: #ccc;
+  }
+
+  /* Add logo and icons using pseudo-elements */
+  .app::before .mobile-header-left::before {
+    content: 'Instagram';
+    font-family: 'Billabong', cursive, sans-serif;
+    font-size: 28px;
+    color: #fff;
+  }
+
+  .app::before .mobile-header-right::before {
+    content: '\e87d \e163'; /* Unicode for favorite and send icons */
+    font-family: 'Material Symbols Outlined';
+    font-size: 24px;
+    color: #fff;
+    display: flex;
+    gap: 15px;
   }
 
   /* Stories section */
