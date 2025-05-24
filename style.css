@@ -688,7 +688,7 @@ body {
     padding-bottom: 60px; /* Space for bottom nav */
   }
 
-  /* Mobile Header - Remove black block, keep logo above stories */
+  /* Mobile Header - Keep logo above stories */
   .app::before {
     content: '';
     position: absolute;
@@ -729,24 +729,27 @@ body {
     overflow-x: hidden;
   }
 
-  /* Stories section - Enable horizontal sliding, keep in one row */
+  /* Stories section - Keep it from scrolling */
   .stories-section {
     display: flex;
-    overflow-x: auto;
+    overflow-x: hidden; /* Prevent horizontal scrolling on stories-section itself */
     padding: 10px 0;
     background: #000;
     border-bottom: 1px solid #333;
     white-space: nowrap;
     margin-top: 50px; /* Space for logo and icons */
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
   }
 
+  /* Enable horizontal scrolling only for account circles */
   .account-circles {
     margin: 0;
     padding: 0 10px;
     display: flex;
     gap: 10px;
     align-items: center;
+    overflow-x: auto; /* Allow horizontal scrolling for account circles */
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
   }
 
   .account-circle {
