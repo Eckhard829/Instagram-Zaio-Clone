@@ -688,55 +688,28 @@ body {
     padding-bottom: 60px; /* Space for bottom nav */
   }
 
-  /* Mobile Header */
+  /* Mobile Header - Remove black block, keep logo above stories */
   .app::before {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 50px;
-    background: #000;
+    height: auto;
+    background: transparent;
     z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #333;
+    display: block;
+    padding: 10px 0;
   }
 
-  .app::before .mobile-header-left {
-    display: flex;
-    align-items: center;
-  }
-
-  .app::before .mobile-logo {
-    font-family: 'Billabong', cursive, sans-serif;
-    font-size: 28px;
-    color: #fff;
-  }
-
-  .app::before .mobile-header-right {
-    display: flex;
-    gap: 15px;
-  }
-
-  .app::before .header-icon {
-    font-size: 24px;
-    color: #fff;
-    cursor: pointer;
-  }
-
-  .app::before .header-icon:hover {
-    color: #ccc;
-  }
-
-  /* Add logo and icons using pseudo-elements */
   .app::before .mobile-header-left::before {
     content: 'Instagram';
     font-family: 'Billabong', cursive, sans-serif;
     font-size: 28px;
     color: #fff;
+    position: absolute;
+    top: 10px;
+    left: 10px;
   }
 
   .app::before .mobile-header-right::before {
@@ -744,24 +717,28 @@ body {
     font-family: 'Material Symbols Outlined';
     font-size: 24px;
     color: #fff;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     display: flex;
     gap: 15px;
   }
 
-  /* Disable horizontal scrolling */
+  /* Disable horizontal scrolling for body */
   body {
     overflow-x: hidden;
   }
 
-  /* Stories section - Disable horizontal scroll */
+  /* Stories section - Enable horizontal sliding, keep in one row */
   .stories-section {
     display: flex;
-    overflow-x: hidden; /* Disable horizontal scrolling */
+    overflow-x: auto;
     padding: 10px 0;
     background: #000;
     border-bottom: 1px solid #333;
     white-space: nowrap;
-    margin-top: 50px; /* Space for mobile header */
+    margin-top: 50px; /* Space for logo and icons */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
   }
 
   .account-circles {
@@ -769,7 +746,7 @@ body {
     padding: 0 10px;
     display: flex;
     gap: 10px;
-    flex-wrap: wrap; /* Allow wrapping to prevent overflow */
+    align-items: center;
   }
 
   .account-circle {
@@ -782,7 +759,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevent shrinking */
   }
 
   .account-circle img {
