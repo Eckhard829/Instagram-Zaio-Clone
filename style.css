@@ -275,6 +275,11 @@ body {
   object-fit: cover;
 }
 
+/* Stories section */
+.stories-section {
+  display: none; /* Hidden on desktop */
+}
+
 /* Post styles */
 .post-section {
   display: flex;
@@ -302,6 +307,8 @@ body {
   height: 34px;
   border-radius: 50%;
   margin-right: 10px;
+  background-size: cover;
+  background-position: center;
 }
 
 .post-username {
@@ -668,65 +675,148 @@ body {
   color: #fff;
 }
 
-/* Responsive styles */
+/* Responsive styles for mobile */
 @media (max-width: 768px) {
-  .main-content {
-    margin-left: 72px;
-    width: calc(100% - 72px);
-    padding: 10px;
-  }
-  .account-circles {
-    justify-content: flex-start;
-  }
-  .account-circle {
-    width: 40px;
-    height: 40px;
-  }
-  .account-circle img {
-    width: 40px;
-    height: 40px;
-  }
-  .post {
-    width: 100%;
-    max-width: 470px;
-  }
-  .post-image {
-    width: 100%;
-    height: 300px;
-  }
-  .auth-container {
+  .app-container {
     flex-direction: column;
   }
-  .auth-left {
-    display: none;
-  }
-  .auth-form {
+
+  .main-content {
+    margin: 0;
     width: 100%;
-    max-width: 350px;
+    padding: 0;
+    padding-bottom: 60px; /* Space for bottom nav */
   }
+
+  /* Stories section */
+  .stories-section {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+    background: #000;
+    border-bottom: 1px solid #333;
+    white-space: nowrap;
+  }
+
+  .account-circles {
+    margin: 0;
+    padding: 0 10px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .account-circle {
+    width: 64px;
+    height: 64px;
+    padding: 2px;
+    border: 2px solid #e1306c;
+    background: linear-gradient(45deg, #f9ed32, #e1306c, #833ab4);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .account-circle img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    object-fit: cover;
+  }
+
+  .account-circle-label {
+    font-size: 12px;
+    text-align: center;
+    color: #fff;
+    margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 64px;
+  }
+
+  /* Post section */
+  .post-section {
+    padding-top: 10px;
+  }
+
+  .post {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+    padding: 0;
+    border-bottom: 1px solid #333;
+  }
+
+  .post-header {
+    padding: 10px;
+  }
+
+  .post-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1; /* Square images like Instagram */
+    border-radius: 0;
+  }
+
+  .post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+  }
+
+  .post-footer {
+    padding: 10px;
+  }
+
+  /* Hide elements not needed on mobile */
   .right-menu {
     display: none;
   }
+
+  /* Bottom navigation */
   .sidebar {
-    width: 72px;
-    padding: 16px;
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    height: 50px;
+    padding: 0;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background: #000;
+    border-top: 1px solid #333;
+    z-index: 1000;
   }
-  .sidebar-logo {
-    padding-left: 8px;
-  }
-  .sidebar-logo h1 {
-    font-size: 28px;
-  }
-  .sidebar-main-nav {
-    padding-left: 8px;
-  }
-  .sidebar-item {
-    justify-content: center;
-  }
-  .sidebar-label {
+
+  .sidebar-logo,
+  .sidebar-more {
     display: none;
   }
-  .sidebar-more {
-    padding-left: 8px;
+
+  .sidebar-main-nav {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    padding: 0;
+  }
+
+  .sidebar-item {
+    flex: 1;
+    justify-content: center;
+    padding: 10px;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .sidebar-item span.material-symbols-outlined {
+    font-size: 24px;
+  }
+
+  .sidebar-label {
+    display: none;
   }
 }
