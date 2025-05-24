@@ -1,5 +1,7 @@
-/* Fonts */
+/* Fonts - Added fallbacks and comments for local hosting */
+/* If fonts.cdnfonts.com fails, consider hosting Billabong locally with @font-face */
 @import url('https://fonts.cdnfonts.com/css/billabong');
+/* If fonts.googleapis.com fails, consider hosting Material Symbols locally */
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
 /* General styles */
@@ -39,7 +41,7 @@ body {
 }
 
 .auth-logo {
-  font-family: 'Billabong', cursive;
+  font-family: 'Billabong', cursive, sans-serif; /* Added fallback */
   font-size: 45px;
   color: #fff;
   margin-bottom: 20px;
@@ -197,7 +199,7 @@ body {
 }
 
 .sidebar-logo h1 {
-  font-family: 'Billabong', cursive;
+  font-family: 'Billabong', cursive, sans-serif; /* Added fallback */
   font-size: 36px;
   color: #fff;
   margin: 0;
