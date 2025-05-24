@@ -146,38 +146,71 @@ class App {
     const file = this.$postImage.files[0];
     const caption = this.$postCaption.value.trim();
 
-    if (!file || !caption) {
-      alert("Please upload an image and add a caption.");
+    // Validate inputs
+    if (!file) {
+      alert("Please upload an image.");
+      return;
+    }
+    if (!caption) {
+      alert("Please add a caption.");
+      return;
+    }
+    if (!this.user) {
+      alert("You must be logged in to create a post.");
       return;
     }
 
     try {
+      // Ensure Firebase is initialized
+      if (!this.storage || !this.db) {
+        throw new Error("Firebase services are not properly initialized.");
+      }
+
+      // Create a unique filename
       const timestamp = Date.now();
       const fileExt = file.name.split(".").pop();
       const filename = `post_${timestamp}.${fileExt}`;
 
+      // Upload image to Firebase Storage with proper initialization
       const storageRef = this.storage.ref(`posts/${this.user.uid}/${filename}`);
-      const uploadTask = await storageRef.put(file);
-      const imageUrl = await uploadTask.ref.getDownloadURL();
-
-      const postRef = await this.db.collection("posts").add({
-        avatar: this.user.photoURL || "https://placehold.co/150",
-        username: this.user.displayName,
-        image: imageUrl,
-        caption,
-        likes: 0,
-        comments: [],
-        authorId: this.user.uid,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      const uploadTask = storageRef.put(file, {
+        contentType: file.type,
+        customMetadata: {
+          'cache-control': 'public,max-age=31536000'
+        }
       });
+      uploadTask.on('state_changed', 
+        (snapshot) => {
+          // Handle progress if needed
+        },
+        (error) => {
+          throw error;
+        },
+        async () => {
+          const imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
 
-      this.$postImage.value = "";
-      this.$postCaption.value = "";
-      this.showSection("home");
-      alert("Post created successfully!");
+          // Add post to Firestore
+          await this.db.collection("posts").add({
+            avatar: this.user.photoURL || "https://placehold.co/150",
+            username: this.user.displayName,
+            image: imageUrl,
+            caption,
+            likes: 0,
+            comments: [],
+            authorId: this.user.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+
+          // Reset form and navigate to home
+          this.$postImage.value = "";
+          this.$postCaption.value = "";
+          this.showSection("home");
+          alert("Post created successfully!");
+        }
+      );
     } catch (error) {
       console.error("Error creating post:", error);
-      alert("Failed to create post. Error: " + error.message);
+      alert(`Failed to create post. Error: ${error.message}`);
     }
   }
 
@@ -221,11 +254,11 @@ class App {
       <div class="post" data-post-id="${post.id}">
         <div class="post-header">
           <div class="post-avatar" style="background-image: url(${post.avatar || "https://placehold.co/150"})"></div>
-          <span class="post-username">${post.username}</span>
+          <span class="post-username">${post.username || "Unknown"}</span>
           <span class="post-time">${this.formatDate(post.timestamp?.toDate())}</span>
         </div>
         <div class="post-image">
-          <img src="${post.image}" alt="Post" onerror="this.src='https://placehold.co/468x585'">
+          <img src="${post.image || "https://placehold.co/468x585"}" alt="Post" onerror="this.src='https://placehold.co/468x585'">
         </div>
         <div class="post-footer">
           <div class="post-actions-row">
@@ -238,9 +271,9 @@ class App {
               <span class="material-symbols-outlined">bookmark</span>
             </div>
           </div>
-          <div class="post-likes">${post.likes} likes</div>
+          <div class="post-likes">${post.likes || 0} likes</div>
           <div class="post-caption">
-            <span class="post-username">${post.username}</span> ${post.caption}
+            <span class="post-username">${post.username || "Unknown"}</span> ${post.caption || ""}
           </div>
           <div class="post-comments" id="comments-${post.id}">
             ${post.comments?.map((comment) => `
@@ -307,7 +340,7 @@ class App {
 
     this.$profilePosts.innerHTML = userPosts
       .map((post) => `
-      <img src="${post.image}" alt="Post" class="profile-post-image" onerror="this.src='https://placehold.co/128'">
+      <img src="${post.image || "https://placehold.co/128"}" alt="Post" class="profile-post-image" onerror="this.src='https://placehold.co/128'">
     `).join("");
   }
 
