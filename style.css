@@ -748,15 +748,15 @@ body {
     gap: 15px;
   }
 
-  /* Disable vertical scrolling */
+  /* Disable horizontal scrolling */
   body {
-    overflow-y: hidden;
+    overflow-x: hidden;
   }
 
-  /* Stories section */
+  /* Stories section - Disable horizontal scroll */
   .stories-section {
     display: flex;
-    overflow-x: auto;
+    overflow-x: hidden; /* Disable horizontal scrolling */
     padding: 10px 0;
     background: #000;
     border-bottom: 1px solid #333;
@@ -769,6 +769,7 @@ body {
     padding: 0 10px;
     display: flex;
     gap: 10px;
+    flex-wrap: wrap; /* Allow wrapping to prevent overflow */
   }
 
   .account-circle {
@@ -781,6 +782,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
   }
 
   .account-circle img {
