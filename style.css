@@ -178,6 +178,11 @@ body {
   justify-content: space-between;
 }
 
+/* Mobile Header */
+.mobile-header {
+  display: none; /* Hidden on desktop */
+}
+
 /* Sidebar styles */
 .sidebar {
   position: fixed;
@@ -688,6 +693,47 @@ body {
     padding-bottom: 60px; /* Space for bottom nav */
   }
 
+  /* Mobile Header */
+  .mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #000;
+    border-bottom: 1px solid #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .mobile-header-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-logo {
+    font-family: 'Billabong', cursive, sans-serif;
+    font-size: 28px;
+    color: #fff;
+  }
+
+  .mobile-header-right {
+    display: flex;
+    gap: 15px;
+  }
+
+  .header-icon {
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .header-icon:hover {
+    color: #ccc;
+  }
+
   /* Stories section */
   .stories-section {
     display: flex;
@@ -696,6 +742,7 @@ body {
     background: #000;
     border-bottom: 1px solid #333;
     white-space: nowrap;
+    margin-top: 50px; /* Space for mobile header */
   }
 
   .account-circles {
@@ -817,6 +864,13 @@ body {
   }
 
   .sidebar-label {
+    display: none;
+  }
+
+  /* Hide unwanted sidebar items on mobile */
+  .sidebar-item[data-section="explore"],
+  .sidebar-item[data-section="messages"],
+  .sidebar-item[data-section="notifications"] {
     display: none;
   }
 }
