@@ -688,28 +688,29 @@ body {
     padding-bottom: 60px; /* Space for bottom nav */
   }
 
-  /* Mobile Header - Keep logo above stories */
+  /* Mobile Header - Ensure logo is above stories */
   .app::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: auto;
+    height: 50px; /* Fixed height for header area */
     background: transparent;
     z-index: 1000;
     display: block;
-    padding: 10px 0;
+    padding: 0;
   }
 
   .app::before .mobile-header-left::before {
     content: 'Instagram';
     font-family: 'Billabong', cursive, sans-serif;
-    font-size: 28px;
+    font-size: 32px; /* Slightly larger for visibility */
     color: #fff;
     position: absolute;
-    top: 10px;
+    top: 5px; /* Adjusted for better spacing */
     left: 10px;
+    line-height: 1;
   }
 
   .app::before .mobile-header-right::before {
@@ -722,6 +723,7 @@ body {
     right: 10px;
     display: flex;
     gap: 15px;
+    line-height: 1;
   }
 
   /* Disable horizontal scrolling for body */
@@ -737,7 +739,7 @@ body {
     background: #000;
     border-bottom: 1px solid #333;
     white-space: nowrap;
-    margin-top: 50px; /* Space for logo and icons */
+    margin-top: 60px; /* Increased space for logo and icons */
   }
 
   /* Enable horizontal scrolling only for account circles */
