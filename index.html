@@ -1,250 +1,348 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Instagram Clone</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://placehold.co/32x32" type="image/x-icon">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-  <script>
-    // Your Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDnbe400XM0B1VfSjLPQKyRzO42Z3uNrTk",
-      authDomain: "instagram-zaio-clone.firebaseapp.com",
-      projectId: "instagram-zaio-clone",
-      storageBucket: "instagram-zaio-clone.appspot.com",
-      messagingSenderId: "1058022922045",
-      appId: "1:1058022922045:web:539f78ff7ccca58b641754"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-  </script>
-</head>
-<body>
-  <div class="app">
-    <!-- Authentication Section -->
-    <div class="auth-container" id="auth-section">
-      <div class="auth-left"></div>
-      <div class="auth-form">
-        <h1 class="auth-logo">Instagram</h1>
-        <form id="auth-form">
-          <input type="email" id="auth-email" class="form-input" placeholder="Email" required />
-          <input type="password" id="auth-password" class="form-input" placeholder="Password" required />
-          <button type="submit" id="auth-submit" class="auth-button">Log In</button>
-          <p id="auth-error" class="error-message"></p>
-        </form>
-        <div class="divider">OR</div>
-        <button class="facebook-login">Log in with Facebook</button>
-        <a href="#" class="forgot-password">Forgot password?</a>
-        <button id="auth-toggle" class="toggle-link">Don't have an account? Sign up</button>
-        <div class="footer-links">
-          <a href="#">Meta</a>
-          <a href="#">About</a>
-          <a href="#">Blog</a>
-          <a href="#">Jobs</a>
-          <a href="#">Help</a>
-          <a href="#">API</a>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Locations</a>
-          <a href="#">Instagram Lite</a>
-          <a href="#">Threads</a>
-          <a href="#">Contact Uploading & Non-Users</a>
-          <a href="#">Meta Verified</a>
-        </div>
-        <div class="footer-copyright">© 2025 Instagram from Meta</div>
-      </div>
-    </div>
-
-    <!-- Main App Container -->
-    <div class="app-container" id="app-container" style="display: none;">
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="sidebar-logo">
-          <h1>Instagram</h1>
-        </div>
-        <div class="sidebar-main-nav">
-          <div class="sidebar-item" data-section="home">
-            <span class="material-symbols-outlined">home</span>
-            <span class="sidebar-label">Home</span>
-          </div>
-          <div class="sidebar-item" data-section="search">
-            <span class="material-symbols-outlined">search</span>
-            <span class="sidebar-label">Search</span>
-          </div>
-          <div class="sidebar-item" data-section="explore">
-            <span class="material-symbols-outlined">explore</span>
-            <span class="sidebar-label">Explore</span>
-          </div>
-          <div class="sidebar-item" data-section="reels">
-            <span class="material-symbols-outlined">movie</span>
-            <span class="sidebar-label">Reels</span>
-          </div>
-          <div class="sidebar-item" data-section="messages">
-            <span class="material-symbols-outlined">send</span>
-            <span class="sidebar-label">Messages</span>
-          </div>
-          <div class="sidebar-item" data-section="notifications">
-            <span class="material-symbols-outlined">favorite</span>
-            <span class="sidebar-label">Notifications</span>
-          </div>
-          <div class="sidebar-item" data-section="create">
-            <span class="material-symbols-outlined">add_box</span>
-            <span class="sidebar-label">Create</span>
-          </div>
-          <div class="sidebar-item" data-section="profile">
-            <span class="material-symbols-outlined">person</span>
-            <span class="sidebar-label">Profile</span>
-          </div>
-        </div>
-        <div class="sidebar-more">
-          <div class="sidebar-item">
-            <span class="material-symbols-outlined">radio_button_unchecked</span>
-            <span class="sidebar-label">Meta AI</span>
-          </div>
-          <div class="sidebar-item">
-            <span class="material-symbols-outlined">alternate_email</span>
-            <span class="sidebar-label">Threads</span>
-          </div>
-          <div class="sidebar-item">
-            <span class="material-symbols-outlined">menu</span>
-            <span class="sidebar-label">More</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Content -->
-      <div class="main-content">
-        <div class="content-block" id="home-section" style="display: block;">
-          <div class="account-circles">
-            <div class="account-circle">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.75761-19/499981008_18280277284248243_1846528086172006743_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=100&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=VBOxEDR8Ae0Q7kNvwHFGRjZ&_nc_oc=Adn2OWPJ0_T7ztadyXvlOI3wKA-Kf5_mOCmS_rFJ7xjKmBMxpHJ_J0j2zCxB6JIY4K0&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&_nc_gid=usb1Dwc6UwfL8es3gTQzVQ&oh=00_AfJUAiFP7l7_MQzswwPPyCGTgKHfHffEnNcPtdZiF-08Kw&oe=683760E5" alt="Profile" />
-            </div>
-            <div class="account-circle">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/465802468_851980453685476_1943523712620449180_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=101&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=nHy0Kq3FnJkQ7kNvwEcmkft&_nc_oc=Adlu_3_3-RwB5bJOuHIo-IBT9075MRd6tiJOQMAU1W2wzE4JtII8TtXWoU_YnjLgCcg&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfL64JMHlTSUqPfFZCKrsE3hFummApWifQkcD9w6KwCZsg&oe=6837505A" alt="Profile" />
-            </div>
-            <div class="account-circle">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/458205646_517772627511690_3063729271515924130_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=106&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=bnLxjau8fpEQ7kNvwEqnqOa&_nc_oc=AdlflL_irKmizRRieyaH0D8Z6gp-XBxNuNiVcZC6ObZXVmjW3bl5MiOKYhTFZGOqm-M&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfJX8FCOM1o69d0oxUsARZMTR3CesmHMUEALc9vgZG9IFg&oe=68377818" alt="Profile" />
-            </div>
-            <div class="account-circle">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/381396321_2035063010178493_4087018526403217551_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=IEnlp_szSlYQ7kNvwGukgwl&_nc_oc=AdnSoqez3FwBf2Q7vE6SE-REPmhjCVtXOjLlUR_BrmNtMHnfCHLrRcK2uI0VF1Teoks&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfLLpwuffDMVIQvASwBQIX6tD-wj-swLfJNe0nHYL7Y_Yg&oe=68377C91" alt="Profile" />
-            </div>
-            <div class="account-circle">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/463130901_8183763298419429_6506145148204192797_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=3oud2I8LfbcQ7kNvwGsGC0n&_nc_oc=Adn53Tz9WMBG3Kk67hgqry2K5vCxOwwLFAa18kET-noCwlWTZplMZYenzq7s3wXwPLg&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfKfXJmHxQWHLXS1MH2rZi886pYBVFGhRhZLvxnw6P1Yew&oe=68378027" alt="Profile" />
-            </div>
-            <div class="account-circle">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/436198797_312547781882348_5774687742510960103_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=0RFPG-dyFF0Q7kNvwENkixC&_nc_oc=AdlDw2McPKTqs_-V-RBNBNyiCRJ0S2TnmssGqasqsJi3Zz8LJ4k-gCJAcfYmmgU3jxc&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfKuHC36xVsgF5xgeL9Dfh6LKFcmqim1EFIZs8i4-Bc8mQ&oe=683779EC" alt="Profile" />
-            </div>
-            <div class="account-circle">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/255266024_896511540999918_2187093427607347334_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=107&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=yla9Cnrr1NYQ7kNvwFrpmMB&_nc_oc=AdnI2VdhKcDHeSKAMRG7hIbHIehSURldq7N67aZNBLl0owuPYAFo44pXihPQZOe_l5Y&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfK4rswYREILqUDPUi3oUsqPAYmbAlkc6afWd8ZayIxA5Q&oe=68376E83" alt="Profile" />
-            </div>
-            <div class="account-circle">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/342741024_6120359521380620_4179435342390930407_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=108&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=wbC8UCBjJHsQ7kNvwEn7pO7&_nc_oc=AdkPY2E4ZT0T-P4mNY6HVjCJ6bEvFliyoW4n2MW2-Vdc8jWYYawApWxjYbG9FniCmg4&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfKgGYHgbKMHiC8JlCcm8UaiXTRnqH4iwxA4Cj8VrCFUxw&oe=68376E1C" alt="Profile" />
-            </div>
-          </div>
-          <div class="post-section" id="post-section"></div>
-        </div>
-
-        <div class="create-post-container" id="create-section" style="display: none;">
-          <h2>Create a Post</h2>
-          <form id="create-post-form">
-            <input type="file" id="post-image" class="create-post-input" accept="image/*" required />
-            <textarea id="post-caption" class="create-post-caption-input" placeholder="Write a caption..." required></textarea>
-            <div class="create-post-buttons">
-              <button type="button" id="create-cancel" class="create-post-cancel-button">Cancel</button>
-              <button type="submit" class="create-post-submit-button">Share</button>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Clone</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://placehold.co/32x32" type="image/x-icon" />
+    <link rel="preload" href="https://www.gstatic.com/..." as="script">
+    <link
+      rel="preload"
+      href="https://www.gstatic.com/..."
+      as="style"
+      crossorigin="anonymous"
+    />
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script>
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDnbe400XM0B1VfSjLPQKyRzO42Z3uNrTk",
+        authDomain: "instagram-zaio-clone.firebaseapp.com",
+        projectId: "instagram-zaio-clone",
+        storageBucket: "bucket-11223344", 
+        messagingSenderId: "1058022922045",
+        appId: "1:1058022922045:web:539f78ff7ccca58b641754",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+  </head>
+  <body>
+    <div class="app">
+      <!-- Authentication Section -->
+      <div class="auth-container" id="auth-section">
+        <div class="auth-left"></div>
+        <div class="auth-form">
+          <h1 class="auth-logo">Instagram</h1>
+          <form id="auth-form">
+            <input
+              type="email"
+              id="auth-email"
+              class="form-input"
+              placeholder="Email"
+              required
+            />
+            <input
+              type="password"
+              id="auth-password"
+              class="form-input"
+              placeholder="Password"
+              required
+            />
+            <button type="submit" id="auth-submit" class="auth-button">
+              Log In
+            </button>
+            <p id="auth-error" class="error-message"></p>
           </form>
-        </div>
-
-        <div class="profile-container" id="profile-section" style="display: none;">
-          <div class="profile-header">
-            <img id="profile-image" class="profile-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtELeHbIcKCPob8bknQ8lMeL-eB34WzDmi7A&s" alt="Profile" />
-            <div class="profile-info">
-              <h2 id="profile-username">eckhard_dednam</h2>
-              <p id="profile-post-count">0 posts</p>
-            </div>
+          <div class="divider">OR</div>
+          <button class="facebook-login">Log in with Facebook</button>
+          <a href="#" class="forgot-password">Forgot password?</a>
+          <button id="auth-toggle" class="toggle-link">
+            Don't have an account? Sign up
+          </button>
+          <div class="footer-links">
+            <a href="#">Meta</a>
+            <a href="#">About</a>
+            <a href="#">Blog</a>
+            <a href="#">Jobs</a>
+            <a href="#">Help</a>
+            <a href="#">API</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Locations</a>
+            <a href="#">Instagram Lite</a>
+            <a href="#">Threads</a>
+            <a href="#">Contact Uploading & Non-Users</a>
+            <a href="#">Meta Verified</a>
           </div>
-          <div class="profile-posts" id="profile-posts"></div>
+          <div class="footer-copyright">© 2025 Instagram from Meta</div>
         </div>
       </div>
 
-      <!-- Right Menu -->
-      <div class="right-menu">
-        <div class="profile-section">
-          <div class="profile-avatar">
-            <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/458315032_487378207491526_1272689892531119702_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=107&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=-bRrhh7pJREQ7kNvwE_8dDx&_nc_oc=AdlgM-nU-YTROt7Jnr9ET4QAggVS75YjHeF2gN3PY3EKW69j62AhVYoECPDNvtCLoLM&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfItbt6GShZMCzPqc3R9kMQNB76zcc_HpTjrlDXO1wVyYg&oe=68375A22" alt="Profile" />
+      <!-- Main App Container -->
+      <div class="app-container" id="app-container" style="display: none">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="sidebar-logo">
+            <h1>Instagram</h1>
           </div>
-          <div class="profile-info">
-            <span class="profile-username">eckhard_dednam</span>
-            <span class="profile-name">Eckhard</span>
+          <div class="sidebar-main-nav">
+            <div class="sidebar-item" data-section="home">
+              <span class="material-symbols-outlined">home</span>
+              <span class="sidebar-label">Home</span>
+            </div>
+            <div class="sidebar-item" data-section="search">
+              <span class="material-symbols-outlined">search</span>
+              <span class="sidebar-label">Search</span>
+            </div>
+            <div class="sidebar-item" data-section="explore">
+              <span class="material-symbols-outlined">explore</span>
+              <span class="sidebar-label">Explore</span>
+            </div>
+            <div class="sidebar-item" data-section="reels">
+              <span class="material-symbols-outlined">movie</span>
+              <span class="sidebar-label">Reels</span>
+            </div>
+            <div class="sidebar-item" data-section="messages">
+              <span class="material-symbols-outlined">send</span>
+              <span class="sidebar-label">Messages</span>
+            </div>
+            <div class="sidebar-item" data-section="notifications">
+              <span class="material-symbols-outlined">favorite</span>
+              <span class="sidebar-label">Notifications</span>
+            </div>
+            <div class="sidebar-item" data-section="create">
+              <span class="material-symbols-outlined">add_box</span>
+              <span class="sidebar-label">Create</span>
+            </div>
+            <div class="sidebar-item" data-section="profile">
+              <span class="material-symbols-outlined">person</span>
+              <span class="sidebar-label">Profile</span>
+            </div>
           </div>
-          <button id="logout-button" class="switch-button">Log Out</button>
+          <div class="sidebar-more">
+            <div class="sidebar-item">
+              <span class="material-symbols-outlined"
+                >radio_button_unchecked</span
+              >
+              <span class="sidebar-label">Meta AI</span>
+            </div>
+            <div class="sidebar-item">
+              <span class="material-symbols-outlined">alternate_email</span>
+              <span class="sidebar-label">Threads</span>
+            </div>
+            <div class="sidebar-item">
+              <span class="material-symbols-outlined">menu</span>
+              <span class="sidebar-label">More</span>
+            </div>
+          </div>
         </div>
-        <div class="suggested-header">
-          <h3>Suggested for you</h3>
-          <a href="#" class="see-all">See all</a>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="content-block" id="home-section" style="display: block">
+            <div class="account-circles">
+              <div class="account-circle">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.75761-19/499981008_18280277284248243_1846528086172006743_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=100&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=VBOxEDR8Ae0Q7kNvwHFGRjZ&_nc_oc=Adn2OWPJ0_T7ztadyXvlOI3wKA-Kf5_mOCmS_rFJ7xjKmBMxpHJ_J0j2zCxB6JIY4K0&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&_nc_gid=usb1Dwc6UwfL8es3gTQzVQ&oh=00_AfJUAiFP7l7_MQzswwPPyCGTgKHfHffEnNcPtdZiF-08Kw&oe=683760E5"
+                  alt="Profile"
+                />
+              </div>
+              <div class="account-circle">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/465802468_851980453685476_1943523712620449180_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=101&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=nHy0Kq3FnJkQ7kNvwEcmkft&_nc_oc=Adlu_3_3-RwB5bJOuHIo-IBT9075MRd6tiJOQMAU1W2wzE4JtII8TtXWoU_YnjLgCcg&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfL64JMHlTSUqPfFZCKrsE3hFummApWifQkcD9w6KwCZsg&oe=6837505A"
+                  alt="Profile"
+                />
+              </div>
+              <div class="account-circle">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/458205646_517772627511690_3063729271515924130_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=106&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=bnLxjau8fpEQ7kNvwEqnqOa&_nc_oc=AdlflL_irKmizRRieyaH0D8Z6gp-XBxNuNiVcZC6ObZXVmjW3bl5MiOKYhTFZGOqm-M&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfJX8FCOM1o69d0oxUsARZMTR3CesmHMUEALc9vgZG9IFg&oe=68377818"
+                  alt="Profile"
+                />
+              </div>
+              <div class="account-circle">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/381396321_2035063010178493_4087018526403217551_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=IEnlp_szSlYQ7kNvwGukgwl&_nc_oc=AdnSoqez3FwBf2Q7vE6SE-REPmhjCVtXOjLlUR_BrmNtMHnfCHLrRcK2uI0VF1Teoks&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfLLpwuffDMVIQvASwBQIX6tD-wj-swLfJNe0nHYL7Y_Yg&oe=68377C91"
+                  alt="Profile"
+                />
+              </div>
+              <div class="account-circle">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/463130901_8183763298419429_6506145148204192797_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=3oud2I8LfbcQ7kNvwGsGC0n&_nc_oc=Adn53Tz9WMBG3Kk67hgqry2K5vCxOwwLFAa18kET-noCwlWTZplMZYenzq7s3wXwPLg&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfKfXJmHxQWHLXS1MH2rZi886pYBVFGhRhZLvxnw6P1Yew&oe=68378027"
+                  alt="Profile"
+                />
+              </div>
+              <div class="account-circle">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/436198797_312547781882348_5774687742510960103_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=0RFPG-dyFF0Q7kNvwENkixC&_nc_oc=AdlDw2McPKTqs_-V-RBNBNyiCRJ0S2TnmssGqasqsJi3Zz8LJ4k-gCJAcfYmmgU3jxc&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfKuHC36xVsgF5xgeL9Dfh6LKFcmqim1EFIZs8i4-Bc8mQ&oe=683779EC"
+                  alt="Profile"
+                />
+              </div>
+              <div class="account-circle">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/255266024_896511540999918_2187093427607347334_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=107&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=yla9Cnrr1NYQ7kNvwFrpmMB&_nc_oc=AdnI2VdhKcDHeSKAMRG7hIbHIehSURldq7N67aZNBLl0owuPYAFo44pXihPQZOe_l5Y&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfK4rswYREILqUDPUi3oUsqPAYmbAlkc6afWd8ZayIxA5Q&oe=68376E83"
+                  alt="Profile"
+                />
+              </div>
+              <div class="account-circle">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/342741024_6120359521380620_4179435342390930407_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=108&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=wbC8UCBjJHsQ7kNvwEn7pO7&_nc_oc=AdkPY2E4ZT0T-P4mNY6HVjCJ6bEvFliyoW4n2MW2-Vdc8jWYYawApWxjYbG9FniCmg4&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfKgGYHgbKMHiC8JlCcm8UaiXTRnqH4iwxA4Cj8VrCFUxw&oe=68376E1C"
+                  alt="Profile"
+                />
+              </div>
+            </div>
+            <div class="post-section" id="post-section"></div>
+          </div>
+
+          <div
+            class="create-post-container"
+            id="create-section"
+            style="display: none"
+          >
+            <h2>Create a Post</h2>
+            <form id="create-post-form">
+              <input
+                type="file"
+                id="post-image"
+                class="create-post-input"
+                accept="image/*"
+                required
+              />
+              <textarea
+                id="post-caption"
+                class="create-post-caption-input"
+                placeholder="Write a caption..."
+                required
+              ></textarea>
+              <div class="create-post-buttons">
+                <button
+                  type="button"
+                  id="create-cancel"
+                  class="create-post-cancel-button"
+                >
+                  Cancel
+                </button>
+                <button type="submit" class="create-post-submit-button">
+                  Share
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div
+            class="profile-container"
+            id="profile-section"
+            style="display: none"
+          >
+            <div class="profile-header">
+              <img
+                id="profile-image"
+                class="profile-image"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtELeHbIcKCPob8bknQ8lMeL-eB34WzDmi7A&s"
+                alt="Profile"
+              />
+              <div class="profile-info">
+                <h2 id="profile-username">eckhard_dednam</h2>
+                <p id="profile-post-count">0 posts</p>
+              </div>
+            </div>
+            <div class="profile-posts" id="profile-posts"></div>
+          </div>
         </div>
-        <ul class="suggested-accounts">
-          <li>
-            <div class="account-avatar">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/484085207_677350518148419_1848744151603425085_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=110&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=nKb-DNNH6MQQ7kNvwH_bWL5&_nc_oc=AdkGwD3uaCqtPnBQtCMLOiPgkf520_5VCUM_S1hAaBYzGdl5dy1KSWQCx7kF3h8vg0g&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfJehYxisW32bxAtL0o9zJF4qATSwQ8KdSx5bgLwrsupHA&oe=683750EB" alt="Account" />
+
+        <!-- Right Menu -->
+        <div class="right-menu">
+          <div class="profile-section">
+            <div class="profile-avatar">
+              <img
+                src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/458315032_487378207491526_1272689892531119702_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=107&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=-bRrhh7pJREQ7kNvwE_8dDx&_nc_oc=AdlgM-nU-YTROt7Jnr9ET4QAggVS75YjHeF2gN3PY3EKW69j62AhVYoECPDNvtCLoLM&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfItbt6GShZMCzPqc3R9kMQNB76zcc_HpTjrlDXO1wVyYg&oe=68375A22"
+                alt="Profile"
+              />
             </div>
-            <span class="account-username">__zaannn__</span>
-            <button class="follow-button">Follow</button>
-          </li>
-          <li>
-            <div class="account-avatar">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/325935276_1177127159614252_2467561970039277535_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=103&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=v3PTKfGWSQsQ7kNvwHd8ouG&_nc_oc=AdlJkRWL4j6gUyHVFIw39Kphl-RtBqBL7Mkr5OdKTfLqCjzA9mCDr__0Zp55-ikD15g&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfJ3utjV16B6tkh8-d2SUC8_s8tCoTWqs19MSZAtPJhjHw&oe=68375E3D" alt="Account" />
+            <div class="profile-info">
+              <span class="profile-username">eckhard_dednam</span>
+              <span class="profile-name">Eckhard</span>
             </div>
-            <span class="account-username">jonathan_smit_05</span>
-            <button class="follow-button">Follow</button>
-          </li>
-          <li>
-            <div class="account-avatar">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/403341018_1094867724840497_1231196154610200334_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=106&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=Mkuyvoox--sQ7kNvwHFIrQp&_nc_oc=Adl56aokDRE2Vt4p_eYCH-FJaz98YSths50ac3kB_EHTXYVL435d4C3Gt_aoB2MX8RA&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfJAHPzBS6C0ylUV9W7oH45zAWU_u8tCoS6efYNxZeBL5g&oe=68377369" alt="Account" />
-            </div>
-            <span class="account-username">werner_de_bruto</span>
-            <button class="follow-button">Follow</button>
-          </li>
-          <li>
-            <div class="account-avatar">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/464996289_869421431973013_3531984671183315251_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=HXxhPaNg0rAQ7kNvwH0imNE&_nc_oc=AdmsMRuwUCDfrjGSGVn3DhzSYx51tKZ4wlkUQcpsUzC86yglxcXAESwsD4Dqihqm0ME&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfIpNvEDp-I_c82dmkY4NU3wuVBqcsCUlxC-I-JrPHS7iA&oe=683774AB" alt="Account" />
-            </div>
-            <span class="account-username">anabolic_jayps</span>
-            <button class="follow-button">Follow</button>
-          </li>
-          <li>
-            <div class="account-avatar">
-              <img src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/472443237_513096317802356_5677648228418942794_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=dkpIW9j_3sgQ7kNvwHEGTzG&_nc_oc=Adn2JKTFgk8vVuHeTawcnkqTIDz--7lH1VnfmZNT3ZIbqlLrNwd8EotW4dd5i-Y6swE&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfIpvu1mJQD1V6W9cmZQAk8YdDZGWyLsr2tAGc1gW97mpQ&oe=683764DF" alt="Account" />
-            </div>
-            <span class="account-username">pulselusso</span>
-            <button class="follow-button">Follow</button>
-          </li>
-        </ul>
-        <div class="footer-links">
-          <a href="#">About</a>
-          <a href="#">Help</a>
-          <a href="#">Press</a>
-          <a href="#">API</a>
-          <a href="#">Jobs</a>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Locations</a>
-          <a href="#">Language</a>
-          <a href="#">Meta Verified</a>
+            <button id="logout-button" class="switch-button">Log Out</button>
+          </div>
+          <div class="suggested-header">
+            <h3>Suggested for you</h3>
+            <a href="#" class="see-all">See all</a>
+          </div>
+          <ul class="suggested-accounts">
+            <li>
+              <div class="account-avatar">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/484085207_677350518148419_1848744151603425085_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=110&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=nKb-DNNH6MQQ7kNvwH_bWL5&_nc_oc=AdkGwD3uaCqtPnBQtCMLOiPgkf520_5VCUM_S1hAaBYzGdl5dy1KSWQCx7kF3h8vg0g&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfJehYxisW32bxAtL0o9zJF4qATSwQ8KdSx5bgLwrsupHA&oe=683750EB"
+                  alt="Account"
+                />
+              </div>
+              <span class="account-username">__zaannn__</span>
+              <button class="follow-button">Follow</button>
+            </li>
+            <li>
+              <div class="account-avatar">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/325935276_1177127159614252_2467561970039277535_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=103&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=v3PTKfGWSQsQ7kNvwHd8ouG&_nc_oc=AdlJkRWL4j6gUyHVFIw39Kphl-RtBqBL7Mkr5OdKTfLqCjzA9mCDr__0Zp55-ikD15g&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfJ3utjV16B6tkh8-d2SUC8_s8tCoTWqs19MSZAtPJhjHw&oe=68375E3D"
+                  alt="Account"
+                />
+              </div>
+              <span class="account-username">jonathan_smit_05</span>
+              <button class="follow-button">Follow</button>
+            </li>
+            <li>
+              <div class="account-avatar">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/403341018_1094867724840497_1231196154610200334_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=106&ccb=1-7&_nc_sid=bf7eb4&_nc_ohc=Mkuyvoox--sQ7kNvwHFIrQp&_nc_oc=Adl56aokDRE2Vt4p_eYCH-FJaz98YSths50ac3kB_EHTXYVL435d4C3Gt_aoB2MX8RA&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfJAHPzBS6C0ylUV9W7oH45zAWU_u8tCoS6efYNxZeBL5g&oe=68377369"
+                  alt="Account"
+                />
+              </div>
+              <span class="account-username">werner_de_bruto</span>
+              <button class="follow-button">Follow</button>
+            </li>
+            <li>
+              <div class="account-avatar">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/464996289_869421431973013_3531984671183315251_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=HXxhPaNg0rAQ7kNvwH0imNE&_nc_oc=AdmsMRuwUCDfrjGSGVn3DhzSYx51tKZ4wlkUQcpsUzC86yglxcXAESwsD4Dqihqm0ME&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfIpNvEDp-I_c82dmkY4NU3wuVBqcsCUlxC-I-JrPHS7iA&oe=683774AB"
+                  alt="Account"
+                />
+              </div>
+              <span class="account-username">anabolic_jayps</span>
+              <button class="follow-button">Follow</button>
+            </li>
+            <li>
+              <div class="account-avatar">
+                <img
+                  src="https://scontent-jnb2-1.cdninstagram.com/v/t51.2885-19/472443237_513096317802356_5677648228418942794_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=1-7&_nc_sid=f7ccc5&_nc_ohc=dkpIW9j_3sgQ7kNvwHEGTzG&_nc_oc=Adn2JKTFgk8vVuHeTawcnkqTIDz--7lH1VnfmZNT3ZIbqlLrNwd8EotW4dd5i-Y6swE&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent-jnb2-1.cdninstagram.com&oh=00_AfIpvu1mJQD1V6W9cmZQAk8YdDZGWyLsr2tAGc1gW97mpQ&oe=683764DF"
+                  alt="Account"
+                />
+              </div>
+              <span class="account-username">pulselusso</span>
+              <button class="follow-button">Follow</button>
+            </li>
+          </ul>
+          <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Help</a>
+            <a href="#">Press</a>
+            <a href="#">API</a>
+            <a href="#">Jobs</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Locations</a>
+            <a href="#">Language</a>
+            <a href="#">Meta Verified</a>
+          </div>
+          <div class="footer-copyright">© 2025 Instagram from Meta</div>
         </div>
-        <div class="footer-copyright">© 2025 Instagram from Meta</div>
       </div>
     </div>
-  </div> <!-- end of .app -->
-<script src="App.js"></script>
-</body>
+    <!-- end of .app -->
+    <script src="App.js"></script>
+  </body>
 </html>
-
-

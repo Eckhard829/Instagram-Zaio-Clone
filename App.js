@@ -10,7 +10,7 @@ class App {
     this.posts = [];
     this.isLogin = true;
 
-    // DOM elements - UPDATED SELECTORS
+    // DOM elements
     this.$authSection = document.getElementById("auth-section");
     this.$appContainer = document.getElementById("app-container");
     this.$authForm = document.getElementById("auth-form");
@@ -32,7 +32,9 @@ class App {
     this.$profilePostCount = document.getElementById("profile-post-count");
     this.$profilePosts = document.getElementById("profile-posts");
     this.$logoutButton = document.getElementById("logout-button");
-    this.$sidebarItems = document.querySelectorAll(".sidebar-item[data-section]");
+    this.$sidebarItems = document.querySelectorAll(
+      ".sidebar-item[data-section]"
+    );
 
     // Initialize
     this.initAuthListener();
@@ -66,10 +68,14 @@ class App {
       this.$authToggle.addEventListener("click", () => this.toggleAuthMode());
     }
     if (this.$createForm) {
-      this.$createForm.addEventListener("submit", (e) => this.handleCreatePost(e));
+      this.$createForm.addEventListener("submit", (e) =>
+        this.handleCreatePost(e)
+      );
     }
     if (this.$createCancel) {
-      this.$createCancel.addEventListener("click", () => this.showSection("home"));
+      this.$createCancel.addEventListener("click", () =>
+        this.showSection("home")
+      );
     }
     if (this.$logoutButton) {
       this.$logoutButton.addEventListener("click", () => this.handleLogout());
@@ -86,26 +92,52 @@ class App {
   }
 
   initPostsListener() {
-    this.db.collection("posts").orderBy("timestamp", "desc").onSnapshot(
-      (snapshot) => {
-        if (snapshot.empty) {
-          this.posts = [];
-        } else {
-          this.posts = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
+    this.db
+      .collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot(
+        (snapshot) => {
+          if (snapshot.empty) {
+            this.posts = [];
+          } else {
+            this.posts = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              authorId: doc.data().authorId,
+              photo: doc.data().photo,
+              caption: doc.data().caption,
+              timestamp: doc.data().timestamp,
+              comments: [], // Will be populated separately
+            }));
+          }
+          this.fetchCommentsForPosts();
+          this.displayPosts();
+          if (this.$profileSection.style.display === "block") {
+            this.displayProfilePosts();
+          }
+        },
+        (error) => {
+          console.error("Error fetching posts:", error);
+          this.$postSection.innerHTML =
+            "<p>Error loading posts. Please try again later.</p>";
         }
-        this.displayPosts();
-        if (this.$profileSection.style.display === "block") {
-          this.displayProfilePosts();
-        }
-      },
-      (error) => {
-        console.error("Error fetching posts:", error);
-        this.$postSection.innerHTML = "<p>Error loading posts. Please try again later.</p>";
-      }
-    );
+      );
+  }
+
+  async fetchCommentsForPosts() {
+    for (const post of this.posts) {
+      const commentsSnapshot = await this.db
+        .collection("posts")
+        .doc(post.id)
+        .collection("comments")
+        .orderBy("timestamp", "asc")
+        .get();
+      post.comments = commentsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        username: doc.data().username,
+        text: doc.data().text,
+        timestamp: doc.data().timestamp,
+      }));
+    }
   }
 
   async handleAuth(e) {
@@ -122,15 +154,21 @@ class App {
       if (this.isLogin) {
         await this.auth.signInWithEmailAndPassword(email, password);
       } else {
-        const userCredential = await this.auth.createUserWithEmailAndPassword(email, password);
+        const userCredential = await this.auth.createUserWithEmailAndPassword(
+          email,
+          password
+        );
         await userCredential.user.updateProfile({
           displayName: email.split("@")[0],
         });
-        await this.db.collection("users").doc(userCredential.user.uid).set({
-          displayName: email.split("@")[0],
-          email: email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
+        await this.db
+          .collection("users")
+          .doc(userCredential.user.uid)
+          .set({
+            displayName: email.split("@")[0],
+            email: email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
       }
       this.$authError.textContent = "";
       this.$authEmail.value = "";
@@ -146,71 +184,98 @@ class App {
     const file = this.$postImage.files[0];
     const caption = this.$postCaption.value.trim();
 
-    // Validate inputs
-    if (!file) {
-      alert("Please upload an image.");
-      return;
-    }
-    if (!caption) {
-      alert("Please add a caption.");
-      return;
-    }
-    if (!this.user) {
-      alert("You must be logged in to create a post.");
+    if (!file || !caption || !this.user) {
+      alert("Please fill all fields and log in");
       return;
     }
 
     try {
-      // Ensure Firebase is initialized
-      if (!this.storage || !this.db) {
-        throw new Error("Firebase services are not properly initialized.");
-      }
+      const storageRef = this.storage.ref();
+      const fileRef = storageRef.child(
+        `posts/${this.user.uid}/${Date.now()}_${file.name}`
+      );
 
-      // Create a unique filename
-      const timestamp = Date.now();
-      const fileExt = file.name.split(".").pop();
-      const filename = `post_${timestamp}.${fileExt}`;
+      const maxRetries = 3;
+      let attempt = 0;
+      let uploadSuccess = false;
+      let downloadURL;
 
-      // Upload image to Firebase Storage with proper initialization
-      const storageRef = this.storage.ref(`posts/${this.user.uid}/${filename}`);
-      const uploadTask = storageRef.put(file, {
-        contentType: file.type,
-        customMetadata: {
-          'cache-control': 'public,max-age=31536000'
-        }
-      });
-      uploadTask.on('state_changed', 
-        (snapshot) => {
-          // Handle progress if needed
-        },
-        (error) => {
-          throw error;
-        },
-        async () => {
-          const imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
-
-          // Add post to Firestore
-          await this.db.collection("posts").add({
-            avatar: this.user.photoURL || "https://placehold.co/150",
-            username: this.user.displayName,
-            image: imageUrl,
-            caption,
-            likes: 0,
-            comments: [],
-            authorId: this.user.uid,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      while (attempt < maxRetries && !uploadSuccess) {
+        try {
+          attempt++;
+          const uploadTask = fileRef.put(file, {
+            contentType: file.type,
+            customMetadata: {
+              "cache-control": "public,max-age=31536000",
+            },
           });
 
-          // Reset form and navigate to home
-          this.$postImage.value = "";
-          this.$postCaption.value = "";
-          this.showSection("home");
-          alert("Post created successfully!");
+          downloadURL = await new Promise((resolve, reject) => {
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                const progress =
+                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log("Upload is " + progress + "% done");
+              },
+              (error) => {
+                reject(error);
+              },
+              async () => {
+                const url = await uploadTask.snapshot.ref.getDownloadURL();
+                resolve(url);
+              }
+            );
+          });
+
+          uploadSuccess = true;
+        } catch (error) {
+          console.error(`Upload attempt ${attempt} failed:`, error);
+          if (attempt === maxRetries) {
+            throw error;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
         }
-      );
+      }
+
+      const postRef = await this.db.collection("posts").add({
+        authorId: this.user.uid,
+        photo: downloadURL,
+        caption: caption,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      this.$postImage.value = "";
+      this.$postCaption.value = "";
+      this.showSection("home");
     } catch (error) {
-      console.error("Error creating post:", error);
-      alert(`Failed to create post. Error: ${error.message}`);
+      console.error("Error:", error);
+      alert("Error creating post: " + error.message);
+    }
+  }
+
+  async handleAddComment(postId) {
+    const commentInput = document.querySelector(
+      `.post-comment-input[data-post-id="${postId}"]`
+    );
+    const commentText = commentInput.value.trim();
+
+    if (!commentText || !this.user) return;
+
+    try {
+      const commentRef = this.db
+        .collection("posts")
+        .doc(postId)
+        .collection("comments")
+        .doc(); // Auto-generate ID
+      await commentRef.set({
+        username: this.user.displayName,
+        text: commentText,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      commentInput.value = "";
+    } catch (error) {
+      console.error("Error adding comment:", error);
     }
   }
 
@@ -232,13 +297,16 @@ class App {
   showSection(section) {
     this.$homeSection.style.display = section === "home" ? "block" : "none";
     this.$createSection.style.display = section === "create" ? "block" : "none";
-    this.$profileSection.style.display = section === "profile" ? "block" : "none";
+    this.$profileSection.style.display =
+      section === "profile" ? "block" : "none";
   }
 
   toggleAuthMode() {
     this.isLogin = !this.isLogin;
     this.$authSubmit.textContent = this.isLogin ? "Log In" : "Sign Up";
-    this.$authToggle.textContent = this.isLogin ? "Don't have an account? Sign up" : "Have an account? Log in";
+    this.$authToggle.textContent = this.isLogin
+      ? "Don't have an account? Sign up"
+      : "Have an account? Log in";
   }
 
   displayPosts() {
@@ -253,12 +321,20 @@ class App {
         (post) => `
       <div class="post" data-post-id="${post.id}">
         <div class="post-header">
-          <div class="post-avatar" style="background-image: url(${post.avatar || "https://placehold.co/150"})"></div>
-          <span class="post-username">${post.username || "Unknown"}</span>
-          <span class="post-time">${this.formatDate(post.timestamp?.toDate())}</span>
+          <div class="post-avatar" style="background-image: url(${
+            this.user?.photoURL || "https://placehold.co/150"
+          })"></div>
+          <span class="post-username">${
+            this.user?.displayName || "Unknown"
+          }</span>
+          <span class="post-time">${this.formatDate(
+            post.timestamp?.toDate()
+          )}</span>
         </div>
         <div class="post-image">
-          <img src="${post.image || "https://placehold.co/468x585"}" alt="Post" onerror="this.src='https://placehold.co/468x585'">
+          <img src="${
+            post.photo || "https://placehold.co/468x585"
+          }" alt="Post" onerror="this.src='https://placehold.co/468x585'">
         </div>
         <div class="post-footer">
           <div class="post-actions-row">
@@ -271,21 +347,33 @@ class App {
               <span class="material-symbols-outlined">bookmark</span>
             </div>
           </div>
-          <div class="post-likes">${post.likes || 0} likes</div>
+          <div class="post-likes">0 likes</div>
           <div class="post-caption">
-            <span class="post-username">${post.username || "Unknown"}</span> ${post.caption || ""}
+            <span class="post-username">${
+              this.user?.displayName || "Unknown"
+            }</span> ${post.caption || ""}
           </div>
           <div class="post-comments" id="comments-${post.id}">
-            ${post.comments?.map((comment) => `
+            ${
+              post.comments
+                ?.map(
+                  (comment) => `
               <div class="comment">
                 <span class="comment-username">${comment.username}</span>
                 <span class="comment-text">${comment.text}</span>
               </div>
-            `).join("") || ""}
+            `
+                )
+                .join("") || ""
+            }
           </div>
           <div class="post-comment-container">
-            <input type="text" placeholder="Add a comment..." class="post-comment-input" data-post-id="${post.id}">
-            <span class="material-symbols-outlined send-comment" data-post-id="${post.id}">send</span>
+            <input type="text" placeholder="Add a comment..." class="post-comment-input" data-post-id="${
+              post.id
+            }">
+            <span class="material-symbols-outlined send-comment" data-post-id="${
+              post.id
+            }">send</span>
           </div>
         </div>
       </div>
@@ -310,38 +398,25 @@ class App {
     });
   }
 
-  async handleAddComment(postId) {
-    const commentInput = document.querySelector(`.post-comment-input[data-post-id="${postId}"]`);
-    const commentText = commentInput.value.trim();
-
-    if (!commentText || !this.user) return;
-
-    try {
-      const postRef = this.db.collection("posts").doc(postId);
-      await postRef.update({
-        comments: firebase.firestore.FieldValue.arrayUnion({
-          username: this.user.displayName,
-          text: commentText,
-        }),
-      });
-      commentInput.value = "";
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    }
-  }
-
   displayProfilePosts() {
     if (!this.user) return;
 
-    const userPosts = this.posts.filter((post) => post.authorId === this.user.uid);
+    const userPosts = this.posts.filter(
+      (post) => post.authorId === this.user.uid
+    );
     this.$profilePostCount.textContent = `${userPosts.length} posts`;
     this.$profileUsername.textContent = this.user.displayName;
     this.$profileImage.src = this.user.photoURL;
 
     this.$profilePosts.innerHTML = userPosts
-      .map((post) => `
-      <img src="${post.image || "https://placehold.co/128"}" alt="Post" class="profile-post-image" onerror="this.src='https://placehold.co/128'">
-    `).join("");
+      .map(
+        (post) => `
+      <img src="${
+        post.photo || "https://placehold.co/128"
+      }" alt="Post" class="profile-post-image" onerror="this.src='https://placehold.co/128'">
+    `
+      )
+      .join("");
   }
 
   formatDate(date) {
